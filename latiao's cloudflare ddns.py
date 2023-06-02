@@ -1,8 +1,8 @@
 # latiao's cloudflare ddns 
 import requests
-
-email = "set you email"
-api_key = "set you api"
+import time 
+email = "email"
+api_key = "api_key"
 domain = "latiaoawa.top"
 subdomain_ipv4 = "ipv4ddns"
 subdomain_ipv6 = "ipv6ddns"
@@ -26,10 +26,10 @@ def get_zone_id(domain):
         return zone_id
     except AssertionError:
         print("Failed to get zone_id, assertion error:", response.json()["errors"])
-        exit()
+        
     except Exception as e:
         print("Failed to get zone_id, exception error:", e)
-        exit()
+        
 
 def get_record_name(subdomain, domain):
     return domain if subdomain == "" else f"{subdomain}.{domain}"
@@ -44,10 +44,10 @@ def get_record_id(zone_id, record_type, record_name):
         return record_id, old_ip
     except AssertionError:
         print("Failed to get record_id or old_ip, assertion error:", response.json()["errors"])
-        exit()
+        
     except Exception as e:
         print("Failed to get record_id or old_ip, exception error:", e)
-        exit()
+        
 
 def update_ip(zone_id, record_type, record_name, record_id, old_ip, new_ip):
     if new_ip == old_ip:
@@ -69,12 +69,15 @@ def update_ip(zone_id, record_type, record_name, record_id, old_ip, new_ip):
         except Exception as e:
             print("Update failed. Exception error:", e)
 
-zone_id = get_zone_id(domain)
+while True:
 
-record_name_ipv4 = get_record_name(subdomain_ipv4, domain)
-record_id_ipv4, old_ipv4 = get_record_id(zone_id, "A", record_name_ipv4)
-update_ip(zone_id, "IPv4", record_name_ipv4, record_id_ipv4, old_ipv4, ipv4)
+    zone_id = get_zone_id(domain)
 
-record_name_ipv6 = get_record_name(subdomain_ipv6, domain)
-record_id_ipv6, old_ipv6 = get_record_id(zone_id, "AAAA", record_name_ipv6)
-update_ip(zone_id, "IPv6", record_name_ipv6, record_id_ipv6, old_ipv6, ipv6)
+    record_name_ipv4 = get_record_name(subdomain_ipv4, domain)
+    record_id_ipv4, old_ipv4 = get_record_id(zone_id, "A", record_name_ipv4)
+    update_ip(zone_id, "A", record_name_ipv4, record_id_ipv4, old_ipv4, ipv4)
+
+    record_name_ipv6 = get_record_name(subdomain_ipv6, domain)
+    record_id_ipv6, old_ipv6 = get_record_id(zone_id, "AAAA", record_name_ipv6)
+    update_ip(zone_id, "AAAA", record_name_ipv6, record_id_ipv6, old_ipv6, ipv6)
+    time.sleep(60)
