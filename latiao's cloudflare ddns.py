@@ -1,5 +1,4 @@
 import requests
-import time 
 import logging 
 
  
@@ -8,10 +7,10 @@ API_KEY = "API_KEY"
 DOMAIN = "DOMAIN"  
 SUBDOMAIN_IPV4 = "SUBDOMAIN_IPV4"
 SUBDOMAIN_IPV6 = "SUBDOMAIN_IPV6"
-UPDATE_INTERVAL = 30
+UPDATE_INTERVAL = 0
 
  
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(format="[latiao's cloudflare ddns]" '%(asctime)s - %(levelname)s - %(message)s' , level=logging.INFO)
 
  
 class CloudflareAPI:
@@ -127,5 +126,4 @@ while True:
     record_id_ipv6, old_ipv6 = cf_api.get_record_id(zone_id, "AAAA", record_name_ipv6)
     cf_api.update_ip(zone_id, "AAAA", record_name_ipv6, record_id_ipv6, old_ipv6, ipv6)
 
-    time.sleep(UPDATE_INTERVAL)  
 
